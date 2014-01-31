@@ -1,6 +1,12 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+
+
 module CabalNew.Types
     ( CabalNew(..)
     ) where
+
+
+import           Data.Data
 
 
 data CabalNew = CabalNew
@@ -14,5 +20,5 @@ data CabalNew = CabalNew
               , projectCategory   :: String
               , projectLibrary    :: Bool
               , projectExecutable :: Bool
-              } deriving (Show)
+              } deriving (Data, Typeable, Show)
 

@@ -1,18 +1,27 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 
 module CabalNew.Templates
     ( execStub
     , stubProgram
+    , templateFile
     ) where
 
 
+import qualified Data.ByteString.Lazy      as B
 import           Data.Text
 import qualified Filesystem.Path.CurrentOS as FS
+import           Prelude
+import qualified Prelude                   as P
 import           Shelly
+import           Text.Hastache
+import           Text.Hastache.Context
 
 import           CabalNew.Cabal
 import           CabalNew.Git
+import           CabalNew.Types
+import           Paths_cabal_new
 
 
 execStub :: Text
@@ -29,3 +38,9 @@ stubProgram isExecutable projectName mainFile = when isExecutable $
         setMainIs cabalFile mainFile
     where mainPath  = FS.decodeString mainFile
           cabalFile = FS.decodeString projectName FS.<.> "cabal"
+
+templateFile :: CabalNew -> P.FilePath -> P.FilePath -> IO ()
+templateFile cabalNew dataFileName outputFileName = do
+    dataFile <- getDataFileName dataFileName
+    output   <- hastacheFile defaultConfig dataFile $ mkGenericContext cabalNew
+    B.writeFile outputFileName output
