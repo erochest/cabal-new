@@ -16,7 +16,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 executable cabal-new
-  -- main-is:             
+  main-is:             CabalNew.hs
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.6 && <4.7
