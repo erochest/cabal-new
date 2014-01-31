@@ -116,6 +116,29 @@ toTitleCase True  (c:cs)   = C.toUpper c : toTitleCase False cs
 toTitleCase _     ('-':cs) = toTitleCase True cs
 toTitleCase False (c:cs)   = c : toTitleCase False cs
 
+init :: CabalNew -> Sh ()
+init config = git_ "init" [] >> withCommit "cabal init" (cabalInit config)
+
+patchProject :: FilePath -> FilePath -> Sh ()
+patchProject projectDir patchDir = withCommit "apply hs project" $
+    chdir patchDir $
+        run_ (patchDir </> "apply-project") [toTextIgnore projectDir]
+
+stubProgram :: Bool -> String -> String -> Sh ()
+stubProgram isExecutable projectName mainFile = when isExecutable $
+    withCommit "Added stub main file." $ do
+        writefile mainPath execStub
+        setMainIs cabalFile mainFile
+    where mainPath  = FS.decodeString mainFile
+          cabalFile = FS.decodeString projectName FS.<.> "cabal"
+
+sandbox :: Sh ()
+sandbox = cabal_ "sandbox" ["init"] >> run_ "sandbox-init" ["--enable-tests"]
+
+publish :: Bool -> Sh ()
+publish isPrivate = unless isPrivate $
+    run_ "hub" ["create"] >> git_ "push" ["-u", "origin", "master"]
+
 
 main :: IO ()
 main = do
@@ -123,34 +146,18 @@ main = do
     shelly $ verbosely $ do
         rootDir  <- configDir $ projectRootDir  config
         patchDir <- configDir $ projectPatchDir config
-        let name       = T.pack $ projectName config
-            projectDir = rootDir </> name
-            private    = privateProject config
+        let projectDir = rootDir </> T.pack (projectName config)
             mainFile   = toTitleCase True (projectName config) ++ ".hs"
-            mainPath   = FS.decodeString mainFile
-            cabal      = FS.decodeString (projectName config) FS.<.> "cabal"
 
         mkdir_p projectDir
 
         chdir projectDir $ do
-            git_ "init" []
-            withCommit "cabal init" $ cabalInit config
-
-            withCommit "apply hs project" $
-                chdir patchDir $
-                    run_ (patchDir </> "apply-project") [toTextIgnore projectDir]
-
+            init config
+            patchProject projectDir patchDir
             withCommit "README.md" $ touchfile "README.md"
-
-            when (projectExecutable config) $
-                withCommit "Added stub main file." $ do
-                    writefile mainPath execStub
-                    setMainIs cabal mainFile
-
-            cabal_ "sandbox" ["init"]
-            run_ "sandbox-init" ["--enable-tests"]
-
-            unless private $ run_ "hub" ["create"] >> git_ "push" ["-u", "origin", "master"]
+            stubProgram (projectExecutable config) (projectName config) mainFile
+            sandbox
+            publish $ privateProject config
         echo "done."
 
     where opts' =   CabalNew
@@ -198,5 +205,4 @@ data CabalNew = CabalNew
               , projectLibrary    :: Bool
               , projectExecutable :: Bool
               } deriving (Show)
-
 
