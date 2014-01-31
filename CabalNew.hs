@@ -50,6 +50,27 @@ import           Shelly
 default (T.Text)
 
 
+main :: IO ()
+main = do
+    config <- execParser opts
+    shelly $ verbosely $ do
+        rootDir  <- configDir $ projectRootDir  config
+        patchDir <- configDir $ projectPatchDir config
+        let projectDir = rootDir </> T.pack (projectName config)
+            mainFile   = toTitleCase True (projectName config) ++ ".hs"
+
+        mkdir_p projectDir
+
+        chdir projectDir $ do
+            init config
+            patchProject projectDir patchDir
+            withCommit "README.md" $ touchfile "README.md"
+            stubProgram (projectExecutable config) (projectName config) mainFile
+            sandbox
+            publish $ privateProject config
+        echo "done."
+
+
 execStub :: Text
 execStub = "\
     \{-# LANGUAGE OverloadedStrings #-}\n\n\
@@ -140,59 +161,6 @@ publish isPrivate = unless isPrivate $
     run_ "hub" ["create"] >> git_ "push" ["-u", "origin", "master"]
 
 
-main :: IO ()
-main = do
-    config <- execParser opts
-    shelly $ verbosely $ do
-        rootDir  <- configDir $ projectRootDir  config
-        patchDir <- configDir $ projectPatchDir config
-        let projectDir = rootDir </> T.pack (projectName config)
-            mainFile   = toTitleCase True (projectName config) ++ ".hs"
-
-        mkdir_p projectDir
-
-        chdir projectDir $ do
-            init config
-            patchProject projectDir patchDir
-            withCommit "README.md" $ touchfile "README.md"
-            stubProgram (projectExecutable config) (projectName config) mainFile
-            sandbox
-            publish $ privateProject config
-        echo "done."
-
-    where opts' =   CabalNew
-                <$> strOption (  short 'r' <> long "root-dir"
-                              <> value "~/p/"
-                              <> help "The root directory for all projects\
-                                      \ (default '~/p/').")
-                <*> strOption (  short 'p' <> long "project-name"
-                              <> help "The project name.")
-                <*> strOption (  short 'a' <> long "apply-project"
-                              <> value (FS.encodeString "~/p/hs-project/")
-                              <> help "The directory containing the project\
-                                      \ to apply a patch on this project\
-                                      \ with (default '~/p/hs-project/').")
-                <*> switch    (  short 'P' <> long "private"
-                              <> help "Don't publish this repository to github.")
-                <*> strOption (  short 'l' <> long "license" <> value "Apache-2.0"
-                              <> help "The cabal option for the license.\
-                                      \ (defaults 'Apache-2.0').")
-                <*> strOption (  short 'e' <> long "email"
-                              <> help "The cabal option for the email.")
-                <*> strOption (  short 's' <> long "synopsis"
-                              <> help "The cabal option for the synopsis.")
-                <*> strOption (  short 'c' <> long "category"
-                              <> help "The cabal option for the category.")
-                <*> switch    (  long "is-library"
-                              <> help "The cabal option for the library.")
-                <*> switch    (  long "is-executable"
-                              <> help "The cabal option for the executable.")
-          opts  = info (helper <*> opts') (  fullDesc
-                                          <> progDesc "Create a new Haskell project with cabal, git, sandbox-init, and everything else."
-                                          <> header "cabal-new - a utility to initialize a new Haskell project."
-                                          )
-
-
 data CabalNew = CabalNew
               { projectRootDir    :: String
               , projectName       :: String
@@ -205,4 +173,42 @@ data CabalNew = CabalNew
               , projectLibrary    :: Bool
               , projectExecutable :: Bool
               } deriving (Show)
+
+opts' :: Parser CabalNew
+opts' =   CabalNew
+      <$> strOption (  short 'r' <> long "root-dir"
+                    <> value "~/p/"
+                    <> help "The root directory for all projects\
+                            \ (default '~/p/').")
+      <*> strOption (  short 'p' <> long "project-name"
+                    <> help "The project name.")
+      <*> strOption (  short 'a' <> long "apply-project"
+                    <> value (FS.encodeString "~/p/hs-project/")
+                    <> help "The directory containing the project\
+                            \ to apply a patch on this project\
+                            \ with (default '~/p/hs-project/').")
+      <*> switch    (  short 'P' <> long "private"
+                    <> help "Don't publish this repository to github.")
+      <*> strOption (  short 'l' <> long "license" <> value "Apache-2.0"
+                    <> help "The cabal option for the license.\
+                            \ (defaults 'Apache-2.0').")
+      <*> strOption (  short 'e' <> long "email"
+                    <> help "The cabal option for the email.")
+      <*> strOption (  short 's' <> long "synopsis"
+                    <> help "The cabal option for the synopsis.")
+      <*> strOption (  short 'c' <> long "category"
+                    <> help "The cabal option for the category.")
+      <*> switch    (  long "is-library"
+                    <> help "The cabal option for the library.")
+      <*> switch    (  long "is-executable"
+                    <> help "The cabal option for the executable.")
+
+opts :: ParserInfo CabalNew
+opts  = info (helper <*> opts') (  fullDesc
+                                <> progDesc "Create a new Haskell project\
+                                            \ with cabal, git, sandbox-init,\
+                                            \ and everything else."
+                                <> header "cabal-new - a utility to initialize\
+                                          \ a new Haskell project."
+                                )
 
