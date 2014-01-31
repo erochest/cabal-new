@@ -25,6 +25,7 @@ executable cabal-new
                      , text
                      , system-filepath
                      , system-fileio
+                     , hastache
 
 test-suite cabal-new-specs
   type:                exitcode-stdio-1.0
