@@ -8,7 +8,6 @@ module CabalNew.Opts
 
 
 import           CabalNew.Types
-import qualified Filesystem.Path.CurrentOS as FS
 import           Options.Applicative
 
 
@@ -20,11 +19,6 @@ opts' =   CabalNew
                             \ (default '~/p/').")
       <*> strOption (  short 'p' <> long "project-name"
                     <> help "The project name.")
-      <*> strOption (  short 'a' <> long "apply-project"
-                    <> value (FS.encodeString "~/p/hs-project/")
-                    <> help "The directory containing the project\
-                            \ to apply a patch on this project\
-                            \ with (default '~/p/hs-project/').")
       <*> switch    (  short 'P' <> long "private"
                     <> help "Don't publish this repository to github.")
       <*> strOption (  short 'l' <> long "license" <> value "Apache-2.0"

@@ -12,7 +12,6 @@ import           Data.Data
 data CabalNew = CabalNew
               { projectRootDir    :: String
               , projectName       :: String
-              , projectPatchDir   :: String
               , privateProject    :: Bool
               , projectLicense    :: String
               , projectEmail      :: String

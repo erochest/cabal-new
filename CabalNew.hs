@@ -29,14 +29,12 @@ main :: IO ()
 main = do
     config <- execParser opts
     shelly $ verbosely $ do
-        rootDir  <- configDir $ projectRootDir  config
-        patchDir <- configDir $ projectPatchDir config
+        rootDir <- configDir $ projectRootDir config
         let config'    = config { projectRootDir = FS.encodeString rootDir }
             projectDir = rootDir </> T.pack (projectName config)
             mainFile   = toTitleCase True (projectName config) ++ ".hs"
 
         mkdir_p projectDir
-
         chdir projectDir $ do
             init config
             patchProject config'
