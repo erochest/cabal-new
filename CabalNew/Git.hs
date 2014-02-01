@@ -23,6 +23,7 @@ gitAddAllCommit msg = git_ "add" ["."] >> git_ "commit" ["-m", msg]
 withCommit :: T.Text -> Sh a -> Sh a
 withCommit msg op = op <* gitAddAllCommit msg
 
-publish :: Bool -> Sh ()
-publish isPrivate = unless isPrivate $
-    run_ "hub" ["create"] >> git_ "push" ["-u", "origin", "master"]
+publish :: Bool -> T.Text -> Sh ()
+publish isPrivate descr = unless isPrivate $
+       run_ "hub" ["create", "-d", descr]
+    >> git_ "push" ["-u", "origin", "master"]

@@ -41,7 +41,7 @@ main = do
             withCommit "README.md" $ touchfile "README.md"
             stubProgram (projectExecutable config) (projectName config) mainFile
             sandbox
-            publish $ privateProject config
+            publish (privateProject config) (T.pack $ projectSynopsis config)
         echo "done."
 
 init :: CabalNew -> Sh ()
