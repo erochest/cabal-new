@@ -1,6 +1,6 @@
 
 
-test-suite PROJECT-specs
+test-suite {{projectName}}-specs
   type:                exitcode-stdio-1.0
   ghc-options:         -threaded -rtsopts
   hs-source-dirs:      specs
@@ -13,7 +13,3 @@ test-suite PROJECT-specs
                        , hspec
                        , QuickCheck
   default-language:    Haskell2010
-
-source-repository this
-  type:                git
-  location:            git://github.com/erochest/PROJECT.git

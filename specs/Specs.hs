@@ -14,9 +14,10 @@ specs :: Spec
 specs = undefined
 
 tests :: TestTree
-tests = testGroup "main"
-    [ testCase "something" specs
+tests = testGroup "cabal-new"
+    [ -- testCase "something" specs
     ]
 
+main :: IO ()
 main = defaultMain tests
 

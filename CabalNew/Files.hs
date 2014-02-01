@@ -1,5 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NoImplicitPrelude    #-}
 
 
 module CabalNew.Files
@@ -10,6 +10,7 @@ module CabalNew.Files
 
 
 import           ClassyPrelude             hiding ((</>), (<>))
+import           Control.Monad
 import qualified Data.Text                 as T
 import           Filesystem                (getHomeDirectory)
 import qualified Filesystem.Path.CurrentOS as FS
@@ -23,7 +24,7 @@ expandUserDir filepath =
         _            -> return filepath
 
 configDir :: String -> Sh FilePath
-configDir = liftIO . expandUserDir . fromString
+configDir = canonicalize <=< liftIO . expandUserDir . fromString
 
 sed :: FilePath -> (T.Text -> T.Text) -> Sh ()
 sed fp f = withTmpDir $ \tmpDir -> do
