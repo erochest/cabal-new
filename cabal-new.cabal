@@ -21,6 +21,7 @@ data-files:          templates/env.mustache
                    , templates/specs.cabal.mustache
                    , templates/repo.cabal.mustache
                    , templates/Specs.hs.mustache
+                   , templates/Main.hs
 cabal-version:       >=1.10
 
 executable cabal-new
