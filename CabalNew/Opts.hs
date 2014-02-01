@@ -8,7 +8,9 @@ module CabalNew.Opts
 
 
 import           CabalNew.Types
+import           Data.Version
 import           Options.Applicative
+import           Paths_cabal_new     (version)
 
 
 opts' :: Parser CabalNew
@@ -36,11 +38,13 @@ opts' =   CabalNew
                     <> help "The cabal option for the executable.")
 
 opts :: ParserInfo CabalNew
-opts  = info (helper <*> opts') (  fullDesc
-                                <> progDesc "Create a new Haskell project\
-                                            \ with cabal, git, sandbox-init,\
-                                            \ and everything else."
-                                <> header "cabal-new - a utility to initialize\
-                                          \ a new Haskell project."
-                                )
+opts  = info (helper <*> opts')
+             (  fullDesc
+             <> progDesc "Create a new Haskell project\
+                         \ with cabal, git, sandbox-init,\
+                         \ and everything else."
+             <> header ("cabal-new - " ++ showVersion version ++
+                        " - a utility to initialize\
+                        \ a new Haskell project.")
+             )
 
