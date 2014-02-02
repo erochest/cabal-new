@@ -38,7 +38,6 @@ main = do
         chdir projectDir $ do
             init config
             patchProject config'
-            withCommit "README.md" $ touchfile "README.md"
             stubProgram (projectExecutable config) (projectName config) mainFile
             sandbox
             publish (privateProject config) (T.pack $ projectSynopsis config)
@@ -49,6 +48,7 @@ init config = git_ "init" [] >> withCommit "cabal init" (cabalInit config)
 
 patchProject :: CabalNew -> Sh ()
 patchProject config@CabalNew{..} = withCommit "apply hs project" $ do
+    templateFile config "templates/README.md.mustache" "README.md"
     templateFile config "templates/env.mustache" ".env"
     copyDataFile "templates/gitignore" ".gitignore"
     templateFile config "templates/Guardfile.mustache" "Guardfile"
