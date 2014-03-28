@@ -55,7 +55,7 @@ test-suite cabal-new-specs
                        , tasty
                        , tasty-golden
                        , tasty-quickcheck
-                       , tasty-hspec
+                       -- , tasty-hspec
                        , hspec
                        , QuickCheck
   default-language:    Haskell2010
