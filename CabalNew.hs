@@ -27,32 +27,37 @@ default (T.Text)
 
 main :: IO ()
 main = do
-    config <- execParser opts
+    config@CabalNew{..} <- execParser opts
     shelly $ verbosely $ do
-        rootDir <- configDir $ projectRootDir config
+        rootDir <- configDir projectRootDir
         let config'    = config { projectRootDir = FS.encodeString rootDir }
-            projectDir = rootDir </> T.pack (projectName config)
-            mainFile   = toTitleCase True (projectName config) ++ ".hs"
+            projectDir = rootDir </> T.pack projectName
+            mainFile   = toTitleCase True projectName ++ ".hs"
 
         mkdir_p projectDir
         chdir projectDir $ do
             init config
             patchProject config'
-            stubProgram (projectExecutable config) (projectName config) mainFile
+            stubProgram projectGitLevel projectExecutable projectName mainFile
             sandbox
-            publish (privateProject config) (T.pack $ projectSynopsis config)
+            publish privateProject projectGitLevel $ T.pack projectSynopsis
         echo "done."
 
 init :: CabalNew -> Sh ()
-init config = git_ "init" [] >> withCommit "cabal init" (cabalInit config)
+init config = do
+    git_ gitLevel "init" []
+    withCommit gitLevel "cabal init" (cabalInit config)
+    where gitLevel = projectGitLevel config
 
 patchProject :: CabalNew -> Sh ()
-patchProject config@CabalNew{..} = withCommit "apply hs project" $ do
+patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project" $ do
     templateFile config "templates/README.md.mustache" "README.md"
     templateFile config "templates/env.mustache" ".env"
-    copyDataFile "templates/gitignore" ".gitignore"
     templateFile config "templates/Guardfile.mustache" "Guardfile"
-    copyDataFile "templates/ctags" ".git/hooks/ctags"
+    unless (projectGitLevel == Gitless) $
+        copyDataFile "templates/gitignore" ".gitignore"
+    when (projectGitLevel == GitHere) $
+        copyDataFile "templates/ctags" ".git/hooks/ctags"
     mkdir_p "specs"
     templateFile config "templates/Specs.hs.mustache" "specs/Specs.hs"
     appendTemplate config "templates/specs.cabal.mustache" cabalFile

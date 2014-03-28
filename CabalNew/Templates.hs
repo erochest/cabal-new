@@ -27,9 +27,9 @@ import           CabalNew.Types
 import           Paths_cabal_new
 
 
-stubProgram :: Bool -> String -> String -> Sh ()
-stubProgram isExecutable projectName mainFile = when isExecutable $
-    withCommit "Added stub main file." $ do
+stubProgram :: GitLevel -> Bool -> String -> String -> Sh ()
+stubProgram gitLevel isExecutable projectName mainFile = when isExecutable $
+    withCommit gitLevel "Added stub main file." $ do
         copyDataFile "templates/Main.hs" $ FS.decodeString mainFile
         setMainIs cabalFile mainFile
     where cabalFile = FS.decodeString projectName FS.<.> "cabal"
