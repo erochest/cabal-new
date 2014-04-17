@@ -14,6 +14,7 @@ module CabalNew.Templates
 import qualified Data.ByteString.Lazy      as BL
 import           Data.Text
 import           Data.Text.Encoding        (decodeUtf8)
+import qualified Data.Text.Lazy            as TL
 import qualified Filesystem.Path.CurrentOS as FS
 import           Prelude
 import qualified Prelude                   as P
@@ -37,7 +38,7 @@ stubProgram gitLevel isExecutable projectName mainFile = when isExecutable $
 templateTo :: CabalNew -> FS.FilePath -> (Text -> Sh ()) -> Sh ()
 templateTo cabalNew dataFileName f = do
     dataFile <- liftIO . getDataFileName $ FS.encodeString dataFileName
-    f . decodeUtf8 . BL.toStrict =<<
+    f . TL.toStrict =<<
         liftIO (hastacheFile defaultConfig dataFile $ mkGenericContext cabalNew)
 
 templateFile :: CabalNew -> FS.FilePath -> FS.FilePath -> Sh ()
