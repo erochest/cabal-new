@@ -1,11 +1,10 @@
 
-
 test-suite {{projectName}}-specs
   type:                exitcode-stdio-1.0
   ghc-options:         -threaded -rtsopts
   hs-source-dirs:      specs
   main-is:             Specs.hs
-  build-depends:         base       == 4.6.*
+  build-depends:         base       == 4.7.*
                        , tasty
                        , tasty-golden
                        , tasty-quickcheck
