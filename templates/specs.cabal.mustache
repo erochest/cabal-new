@@ -5,10 +5,10 @@ test-suite {{projectName}}-specs
   hs-source-dirs:      specs
   main-is:             Specs.hs
   build-depends:         base       == 4.7.*
-                       , tasty
-                       , tasty-golden
-                       , tasty-quickcheck
-                       , tasty-smallcheck
                        , QuickCheck
                        , smallcheck
+                       , hspec
+                       -- , tasty
+                       -- , tasty-quickcheck
+                       -- , tasty-smallcheck
   default-language:    Haskell2010
