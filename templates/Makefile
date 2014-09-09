@@ -26,6 +26,9 @@ run:
 # deploy:
 # prep and push
 
+hlint:
+	hlint *.hs src specs
+
 clean:
 	cabal clean
 
@@ -44,4 +47,4 @@ build:
 
 rebuild: clean configure build
 
-.PHONY: all init test run clean distclean configure deps build rebuild
+.PHONY: all init test run clean distclean configure deps build rebuild hlint
