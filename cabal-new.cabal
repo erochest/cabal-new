@@ -20,7 +20,7 @@ data-files:          templates/env.mustache
                    , templates/ctags
                    , templates/specs.cabal.mustache
                    , templates/repo.cabal.mustache
-                   , templates/Specs.hs.mustache
+                   , templates/Specs.hs
                    , templates/Makefile
                    , templates/project.vim
                    , templates/Main.hs

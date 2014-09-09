@@ -61,7 +61,7 @@ patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project"
     when (projectGitLevel == GitHere) $
         copyDataFile "templates/ctags" ".git/hooks/ctags"
     mkdir_p "specs"
-    templateFile config "templates/Specs.hs.mustache" "specs/Specs.hs"
+    copyDataFile "templates/Specs.hs" "specs/Specs.hs"
     appendTemplate config "templates/specs.cabal.mustache" cabalFile
     run "stylish-haskell" ["--defaults"] >>= writefile ".stylish-haskell.yaml"
     unless privateProject $
