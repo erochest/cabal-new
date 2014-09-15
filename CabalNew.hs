@@ -32,7 +32,7 @@ main = do
         rootDir <- configDir projectRootDir
         let config'    = config { projectRootDir = FS.encodeString rootDir }
             projectDir = rootDir </> T.pack projectName
-            mainFile   = toTitleCase True projectName ++ ".hs"
+            mainFile   = "Main.hs"
 
         mkdir_p projectDir
         chdir projectDir $ do

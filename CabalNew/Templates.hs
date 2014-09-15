@@ -30,9 +30,8 @@ import           Paths_cabal_new
 
 stubProgram :: GitLevel -> Bool -> String -> String -> Sh ()
 stubProgram gitLevel isExecutable projectName mainFile = when isExecutable $
-    withCommit gitLevel "Added stub main file." $ do
+    withCommit gitLevel "Added stub main file." $
         copyDataFile "templates/Main.hs" $ FS.decodeString mainFile
-        setMainIs cabalFile mainFile
     where cabalFile = FS.decodeString projectName FS.<.> "cabal"
 
 templateTo :: CabalNew -> FS.FilePath -> (Text -> Sh ()) -> Sh ()
