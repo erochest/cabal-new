@@ -18,6 +18,7 @@ data-files:          templates/env.mustache
                    , templates/Guardfile.mustache
                    , templates/README.md.mustache
                    , templates/ctags
+                   , templates/executable.cabal.mustache
                    , templates/specs.cabal.mustache
                    , templates/repo.cabal.mustache
                    , templates/Specs.hs

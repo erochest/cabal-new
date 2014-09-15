@@ -26,11 +26,10 @@ cabal_ = command1_ "cabal" []
 cabalInit :: CabalNew -> Sh ()
 cabalInit CabalNew{..} =
     cabal_ "init" $ catMaybes [ Just   "--non-interactive"
+                              , Just   "--is-library"
                               , ifSet  "license"       projectLicense
                               , ifSet  "email"         projectEmail
                               , ifSet  "synopsis"      projectSynopsis
-                              , ifTrue "is-library"    projectLibrary
-                              , ifTrue "is-executable" projectExecutable
                               ]
 
 setMainIs :: FilePath -> String -> Sh ()
