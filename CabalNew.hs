@@ -9,6 +9,7 @@ module Main where
 
 
 import           ClassyPrelude             hiding ((</>), (<>))
+import           Data.Monoid
 import qualified Data.Text                 as T
 import qualified Filesystem.Path.CurrentOS as FS
 import           Options.Applicative       (execParser)
@@ -41,6 +42,8 @@ main = do
             stubProgram projectGitLevel projectExecutable projectName mainFile
             sandbox
             publish privateProject projectGitLevel $ T.pack projectSynopsis
+            tmuxLayout config
+
         echo "done."
 
 init :: CabalNew -> Sh ()
@@ -71,3 +74,7 @@ patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project"
         appendTemplate config "templates/repo.cabal.mustache" cabalFile
     where cabalFile = FS.decodeString projectName FS.<.> "cabal"
 
+tmuxLayout :: CabalNew -> Sh ()
+tmuxLayout config@CabalNew{..} =
+    templateFile config "templates/tmux-layouts.window.sh.mustache"
+        . FS.decodeString $ "." ++ projectName ++ ".window.sh"
