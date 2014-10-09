@@ -46,6 +46,8 @@ opts' =   CabalNew
                      <> help "The cabal option for the library.")
       <*> switch     (  long "is-executable"
                      <> help "The cabal option for the executable.")
+      <*> switch     (  long "tmuxifier"
+                     <> help "Generate and place a tmuxifier layout.")
 
 opts :: ParserInfo CabalNew
 opts  = info (helper <*> opts')

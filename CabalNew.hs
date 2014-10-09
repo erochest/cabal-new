@@ -11,6 +11,7 @@ module Main where
 import           ClassyPrelude             hiding ((</>), (<>))
 import           Data.Monoid
 import qualified Data.Text                 as T
+import           Filesystem                (getHomeDirectory)
 import qualified Filesystem.Path.CurrentOS as FS
 import           Options.Applicative       (execParser)
 import           Shelly
@@ -42,6 +43,8 @@ main = do
             stubProgram projectGitLevel projectExecutable projectName mainFile
             sandbox
             publish privateProject projectGitLevel $ T.pack projectSynopsis
+
+        when projectTmuxifier $
             tmuxLayout config
 
         echo "done."
@@ -75,6 +78,10 @@ patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project"
     where cabalFile = FS.decodeString projectName FS.<.> "cabal"
 
 tmuxLayout :: CabalNew -> Sh ()
-tmuxLayout config@CabalNew{..} =
+tmuxLayout config@CabalNew{..} = do
+    tmuxLayouts <- (</> ".tmux-layouts") <$> liftIO getHomeDirectory
+    echo $ "Copying tmuxifier layout to " <> toTextIgnore tmuxLayouts
     templateFile config "templates/tmux-layouts.window.sh.mustache"
-        . FS.decodeString $ "." ++ projectName ++ ".window.sh"
+        . (tmuxLayouts </>)
+        . FS.decodeString
+        $ projectName ++ ".window.sh"

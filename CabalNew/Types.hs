@@ -24,5 +24,6 @@ data CabalNew = CabalNew
               , projectCategory   :: String
               , projectLibrary    :: Bool
               , projectExecutable :: Bool
+              , projectTmuxifier  :: Bool
               } deriving (Data, Typeable, Show)
 
