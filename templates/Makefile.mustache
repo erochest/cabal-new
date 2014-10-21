@@ -10,6 +10,9 @@ init:
 test: build
 	cabal test --test-option=--color
 
+specs: build
+	./dist/build/{{projectName}}-specs/{{projectName}}-specs
+
 run:
 	cabal run
 

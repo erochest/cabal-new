@@ -24,7 +24,7 @@ data-files:          templates/env.mustache
                    , templates/tmux-layouts.window.sh.mustache
                    , templates/repo.cabal.mustache
                    , templates/Specs.hs
-                   , templates/Makefile
+                   , templates/Makefile.mustache
                    , templates/project.vim
                    , templates/Main.hs
 cabal-version:       >=1.10

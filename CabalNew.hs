@@ -57,7 +57,7 @@ init config = do
 
 patchProject :: CabalNew -> Sh ()
 patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project" $ do
-    copyDataFile "templates/Makefile" "Makefile"
+    templateFile config "templates/Makefile.mustache" "Makefile"
     copyDataFile "templates/project.vim" ".project.vim"
     copyDataFile "templates/ghci" ".ghci"
     templateFile config "templates/README.md.mustache" "README.md"
