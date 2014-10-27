@@ -11,6 +11,7 @@ import           CabalNew.Types
 import           Data.Char           (toLower)
 import           Data.Version
 import           Options.Applicative
+import           Options.Applicative.Types
 import           Paths_cabal_new     (version)
 
 
@@ -22,9 +23,8 @@ opts' =   CabalNew
                              \ (default '~/p/').")
       <*> strOption  (  short 'p' <> long "project-name"
                      <> help "The project name.")
-      <*> nullOption (  short 'g' <> long "git"
+      <*> gitOption  (  short 'g' <> long "git"
                      <> value GitHere
-                     <> reader readGitLevel
                      <> help "The level of git interaction to use. 'Here' (the\
                              \ default) means that the new project directory\
                              \ will be a git repository. 'Parent' means that\
@@ -48,6 +48,9 @@ opts' =   CabalNew
                      <> help "The cabal option for the executable.")
       <*> switch     (  short 'T' <> long "tmuxifier"
                      <> help "Generate and place a tmuxifier layout.")
+
+gitOption :: Mod OptionFields GitLevel -> Parser GitLevel
+gitOption = option (readGitLevel =<< readerAsk)
 
 opts :: ParserInfo CabalNew
 opts  = info (helper <*> opts')
