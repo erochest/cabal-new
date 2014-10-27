@@ -25,7 +25,6 @@ data-files:          templates/env.mustache
                    , templates/repo.cabal.mustache
                    , templates/Specs.hs
                    , templates/Makefile.mustache
-                   , templates/project.vim
                    , templates/Main.hs
 cabal-version:       >=1.10
 
