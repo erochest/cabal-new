@@ -42,11 +42,11 @@ opts' =   CabalNew
                      <> help "The cabal option for the synopsis.")
       <*> strOption  (  short 'c' <> long "category"
                      <> help "The cabal option for the category.")
-      <*> switch     (  long "is-library"
+      <*> switch     (  short 'L' <> long "is-library"
                      <> help "The cabal option for the library.")
-      <*> switch     (  long "is-executable"
+      <*> switch     (  short 'E' <> long "is-executable"
                      <> help "The cabal option for the executable.")
-      <*> switch     (  long "tmuxifier"
+      <*> switch     (  short 'T' <> long "tmuxifier"
                      <> help "Generate and place a tmuxifier layout.")
 
 opts :: ParserInfo CabalNew
