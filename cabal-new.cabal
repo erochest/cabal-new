@@ -16,7 +16,6 @@ build-type:          Simple
 data-files:          templates/env.mustache
                    , templates/gitignore
                    , templates/ghci
-                   , templates/Guardfile.mustache
                    , templates/README.md.mustache
                    , templates/ctags
                    , templates/executable.cabal.mustache
