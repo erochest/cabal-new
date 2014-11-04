@@ -19,7 +19,7 @@ import           CabalNew.Types
 
 git_ :: GitLevel -> T.Text -> [T.Text] -> Sh ()
 git_ Gitless   c      _    = echo $ "Running gitless. Skipping 'git " <> c <> "'."
-git_ ParentGit "init" _    = echo $ "Using parent repository. Skipping 'git init'."
+git_ ParentGit "init" _    = echo   "Using parent repository. Skipping 'git init'."
 git_ ParentGit c      args = git_' c args
 git_ GitHere   c      args = git_' c args
 

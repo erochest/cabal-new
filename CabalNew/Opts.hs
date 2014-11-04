@@ -42,15 +42,18 @@ opts' =   CabalNew
                      <> help "The cabal option for the synopsis.")
       <*> strOption  (  short 'c' <> long "category"
                      <> help "The cabal option for the category.")
-      <*> switch     (  short 'L' <> long "is-library"
-                     <> help "The cabal option for the library.")
-      <*> switch     (  short 'E' <> long "is-executable"
-                     <> help "The cabal option for the executable.")
+      <*> targetOpt  (  short 't' <> long "target"
+                     <> help "The type of project (compile target):\
+                             \ 'Executable' or 'Library'. Default is\
+                             \ Executable.")
       <*> switch     (  short 'T' <> long "tmuxifier"
                      <> help "Generate and place a tmuxifier layout.")
 
 gitOption :: Mod OptionFields GitLevel -> Parser GitLevel
 gitOption = option (readGitLevel =<< readerAsk)
+
+targetOpt :: Mod OptionFields CabalTarget -> Parser CabalTarget
+targetOpt = option (readTargetOption =<< readerAsk)
 
 opts :: ParserInfo CabalNew
 opts  = info (helper <*> opts')
@@ -72,3 +75,10 @@ readGitLevel level = go $ map toLower level
                             ++ "'. Please supply one of 'here', 'parent',\
                                \ or 'none'."
 
+readTargetOption :: Monad m => String -> m CabalTarget
+readTargetOption target = go $ map toLower target
+    where go ('l':_) = return Library
+          go ('e':_) = return Executable
+          go _       = fail $  "Invalid --target value: '" ++ target
+                            ++ "'. Please supply one of 'executable' or\
+                               \ 'library'."

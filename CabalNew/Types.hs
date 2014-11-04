@@ -3,6 +3,7 @@
 
 module CabalNew.Types
     ( CabalNew(..)
+    , CabalTarget(..)
     , GitLevel(..)
     ) where
 
@@ -13,6 +14,10 @@ import           Data.Data
 data GitLevel = GitHere | ParentGit | Gitless
               deriving (Show, Eq, Data, Typeable)
 
+data CabalTarget = Executable
+                 | Library
+                 deriving (Show, Eq, Data, Typeable)
+
 data CabalNew = CabalNew
               { projectRootDir    :: String
               , projectName       :: String
@@ -22,8 +27,7 @@ data CabalNew = CabalNew
               , projectEmail      :: String
               , projectSynopsis   :: String
               , projectCategory   :: String
-              , projectLibrary    :: Bool
-              , projectExecutable :: Bool
+              , projectTarget     :: CabalTarget
               , projectTmuxifier  :: Bool
               } deriving (Data, Typeable, Show)
 

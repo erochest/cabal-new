@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
 
 
 module CabalNew.Templates
@@ -11,28 +10,23 @@ module CabalNew.Templates
     ) where
 
 
-import qualified Data.ByteString.Lazy      as BL
 import           Data.Text
-import           Data.Text.Encoding        (decodeUtf8)
 import qualified Data.Text.Lazy            as TL
 import qualified Filesystem.Path.CurrentOS as FS
 import           Prelude
-import qualified Prelude                   as P
 import           Shelly
 import           Text.Hastache
 import           Text.Hastache.Context
 
-import           CabalNew.Cabal
 import           CabalNew.Git
 import           CabalNew.Types
 import           Paths_cabal_new
 
 
 stubProgram :: GitLevel -> Bool -> String -> String -> Sh ()
-stubProgram gitLevel isExecutable projectName mainFile = when isExecutable $
+stubProgram gitLevel isExecutable _projectName mainFile = when isExecutable $
     withCommit gitLevel "Added stub main file." $
         copyDataFile "templates/Main.hs" $ FS.decodeString mainFile
-    where cabalFile = FS.decodeString projectName FS.<.> "cabal"
 
 templateTo :: CabalNew -> FS.FilePath -> (Text -> Sh ()) -> Sh ()
 templateTo cabalNew dataFileName f = do

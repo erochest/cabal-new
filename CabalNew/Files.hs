@@ -10,7 +10,6 @@ module CabalNew.Files
 
 
 import           ClassyPrelude             hiding ((</>), (<>))
-import           Control.Monad
 import qualified Data.Text                 as T
 import           Filesystem                (getHomeDirectory)
 import qualified Filesystem.Path.CurrentOS as FS

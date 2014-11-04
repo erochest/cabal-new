@@ -22,7 +22,6 @@ import           CabalNew.Git
 import           CabalNew.Opts
 import           CabalNew.Templates
 import           CabalNew.Types
-import           CabalNew.Utils
 
 default (T.Text)
 
@@ -35,6 +34,7 @@ main = do
         let config'    = config { projectRootDir = FS.encodeString rootDir }
             projectDir = rootDir </> T.pack projectName
             mainFile   = "Main.hs"
+            projectExecutable = projectTarget == Executable
 
         mkdir_p projectDir
         chdir projectDir $ do
@@ -67,7 +67,7 @@ patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project"
         copyDataFile "templates/ctags" ".git/hooks/ctags"
     mkdir_p "specs"
     copyDataFile "templates/Specs.hs" "specs/Specs.hs"
-    when projectExecutable $
+    when (projectTarget == Executable) $
         appendTemplate config "templates/executable.cabal.mustache" cabalFile
     appendTemplate config "templates/specs.cabal.mustache" cabalFile
     run "stylish-haskell" ["--defaults"] >>= writefile ".stylish-haskell.yaml"
