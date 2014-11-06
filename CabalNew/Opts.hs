@@ -42,7 +42,7 @@ opts' =   CabalNew
                      <> help "The cabal option for the synopsis.")
       <*> strOption  (  short 'c' <> long "category"
                      <> help "The cabal option for the category.")
-      <*> targetOpt  (  short 't' <> long "target"
+      <*> targetOpt  (  short 't' <> long "target" <> value Executable
                      <> help "The type of project (compile target):\
                              \ 'Executable' or 'Library'. Default is\
                              \ Executable.")
