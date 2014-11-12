@@ -17,11 +17,13 @@ import           Options.Applicative       (execParser)
 import           Shelly
 
 import           CabalNew.Cabal
+import           CabalNew.Common
 import           CabalNew.Files
 import           CabalNew.Git
 import           CabalNew.Opts
 import           CabalNew.Templates
 import           CabalNew.Types
+import           CabalNew.Yesod
 
 default (T.Text)
 
@@ -33,14 +35,20 @@ main = do
         rootDir <- configDir projectRootDir
         let config'    = config { projectRootDir = FS.encodeString rootDir }
             projectDir = rootDir </> T.pack projectName
-            mainFile   = "Main.hs"
-            projectExecutable = projectTarget == Executable
 
         mkdir_p projectDir
         chdir projectDir $ do
             init config
-            patchProject config'
-            stubProgram projectGitLevel projectExecutable projectName mainFile
+
+            patch <- case projectTarget of
+                Executable -> cabalProject config' projectDir
+                Library    -> cabalProject config' projectDir
+                Yesod      -> yesodProject config' projectDir
+
+            withCommit projectGitLevel "apply hs project" $ do
+                patch
+                patchProject config'
+
             sandbox
             publish privateProject projectGitLevel $ T.pack projectSynopsis
 
@@ -48,38 +56,3 @@ main = do
             tmuxLayout config
 
         echo "done."
-
-init :: CabalNew -> Sh ()
-init config = do
-    git_ gitLevel "init" []
-    withCommit gitLevel "cabal init" (cabalInit config)
-    where gitLevel = projectGitLevel config
-
-patchProject :: CabalNew -> Sh ()
-patchProject config@CabalNew{..} = withCommit projectGitLevel "apply hs project" $ do
-    templateFile config "templates/Makefile.mustache" "Makefile"
-    copyDataFile "templates/ghci" ".ghci"
-    templateFile config "templates/README.md.mustache" "README.md"
-    templateFile config "templates/env.mustache" ".env"
-    unless (projectGitLevel == Gitless) $
-        copyDataFile "templates/gitignore" ".gitignore"
-    when (projectGitLevel == GitHere) $
-        copyDataFile "templates/ctags" ".git/hooks/ctags"
-    mkdir_p "specs"
-    copyDataFile "templates/Specs.hs" "specs/Specs.hs"
-    when (projectTarget == Executable) $
-        appendTemplate config "templates/executable.cabal.mustache" cabalFile
-    appendTemplate config "templates/specs.cabal.mustache" cabalFile
-    run "stylish-haskell" ["--defaults"] >>= writefile ".stylish-haskell.yaml"
-    unless privateProject $
-        appendTemplate config "templates/repo.cabal.mustache" cabalFile
-    where cabalFile = FS.decodeString projectName FS.<.> "cabal"
-
-tmuxLayout :: CabalNew -> Sh ()
-tmuxLayout config@CabalNew{..} = do
-    tmuxLayouts <- (</> ".tmux-layouts") <$> liftIO getHomeDirectory
-    echo $ "Copying tmuxifier layout to " <> toTextIgnore tmuxLayouts
-    templateFile config "templates/tmux-layouts.window.sh.mustache"
-        . (tmuxLayouts </>)
-        . FS.decodeString
-        $ projectName ++ ".window.sh"

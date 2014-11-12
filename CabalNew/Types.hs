@@ -16,6 +16,7 @@ data GitLevel = GitHere | ParentGit | Gitless
 
 data CabalTarget = Executable
                  | Library
+                 | Yesod
                  deriving (Show, Eq, Data, Typeable)
 
 data CabalNew = CabalNew

@@ -44,8 +44,8 @@ opts' =   CabalNew
                      <> help "The cabal option for the category.")
       <*> targetOpt  (  short 't' <> long "target" <> value Executable
                      <> help "The type of project (compile target):\
-                             \ 'Executable' or 'Library'. Default is\
-                             \ Executable.")
+                             \ 'Executable', 'Library', or 'Yesod'.\
+                             \ Default is Executable.")
       <*> switch     (  short 'T' <> long "tmuxifier"
                      <> help "Generate and place a tmuxifier layout.")
 
@@ -79,6 +79,7 @@ readTargetOption :: Monad m => String -> m CabalTarget
 readTargetOption target = go $ map toLower target
     where go ('l':_) = return Library
           go ('e':_) = return Executable
+          go ('y':_) = return Yesod
           go _       = fail $  "Invalid --target value: '" ++ target
                             ++ "'. Please supply one of 'executable' or\
                                \ 'library'."
