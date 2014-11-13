@@ -54,7 +54,6 @@ cabalProject config@CabalNew{..} _projectDir = do
         cabalInit config
     stubProgram projectGitLevel projectExecutable projectName mainFile
     return $ do
-        templateFile config "templates/Makefile-cabal.mustache" "Makefile"
         copyDataFile "templates/ghci" ".ghci"
         unless (projectGitLevel == Gitless) $
             copyDataFile "templates/gitignore" ".gitignore"

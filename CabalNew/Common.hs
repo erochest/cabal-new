@@ -27,6 +27,7 @@ init config = git_ (projectGitLevel config) "init" []
 
 patchProject :: CabalNew -> Sh ()
 patchProject config@CabalNew{..} = do
+    templateFile config "templates/Makefile.mustache" "Makefile"
     templateFile config "templates/README.md.mustache" "README.md"
     templateFile config "templates/env.mustache" ".env"
     when (projectGitLevel == GitHere) $

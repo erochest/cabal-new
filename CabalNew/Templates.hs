@@ -32,7 +32,24 @@ templateTo :: CabalNew -> FS.FilePath -> (Text -> Sh ()) -> Sh ()
 templateTo cabalNew dataFileName f = do
     dataFile <- liftIO . getDataFileName $ FS.encodeString dataFileName
     f . TL.toStrict =<<
-        liftIO (hastacheFile defaultConfig dataFile $ mkGenericContext cabalNew)
+        liftIO (hastacheFile defaultConfig dataFile $ mkStrContext context)
+    where
+        context :: Monad m => String -> MuType m
+        context "build"   = MuVariable $ if projectTarget cabalNew == Yesod
+                                then "yesod" :: Text
+                                else "cabal"
+        context "isyesod" = MuBool $ projectTarget cabalNew == Yesod
+        context "projectRootDir"   = MuVariable $ projectRootDir cabalNew
+        context "projectName"      = MuVariable $ projectName cabalNew
+        context "projectGitLevel"  = MuVariable . show $ projectGitLevel cabalNew
+        context "privateProject"   = MuBool $ privateProject cabalNew
+        context "projectLicense"   = MuVariable $ projectLicense cabalNew
+        context "projectEmail"     = MuVariable $ projectEmail cabalNew
+        context "projectSynopsis"  = MuVariable $ projectSynopsis cabalNew
+        context "projectCategory"  = MuVariable $ projectCategory cabalNew
+        context "projectTarget"    = MuVariable . show $ projectTarget cabalNew
+        context "projectTmuxifier" = MuBool $ projectTmuxifier cabalNew
+        context _ = MuNothing
 
 templateFile :: CabalNew -> FS.FilePath -> FS.FilePath -> Sh ()
 templateFile cabalNew dataFileName outputFileName =

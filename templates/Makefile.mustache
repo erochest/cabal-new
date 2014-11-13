@@ -1,5 +1,10 @@
 
+{{#isyesod}}
 PORT=9090
+{{/isyesod}}
+{{^isyesod}}
+FLAGS=--enable-tests
+{{/isyesod}}
 
 all: init test docs package
 
@@ -8,7 +13,16 @@ init:
 	make deps
 
 test: build
-	yesod test
+	{{build}} test{{^isyesod}} --test-option=--color{{/isyesod}}
+
+{{#isyesod}}
+dev:
+	yesod devel --port=${PORT}
+{{/isyesod}}
+{{^isyesod}}
+specs: build
+	./dist/build/{{projectName}}-specs/{{projectName}}-specs
+{{/isyesod}}
 
 run:
 	cabal run
@@ -19,14 +33,14 @@ run:
 # package:
 # build a release tarball or executable
 #
+# dev:
+# start dev server or process. `vagrant up`, `yesod devel`, etc.
+#
 # install:
 # generate executable and put it into `/usr/local`
 #
 # deploy:
 # prep and push
-
-dev:
-	yesod devel --port=${PORT}
 
 hlint:
 	hlint *.hs src specs
@@ -38,14 +52,14 @@ distclean: clean
 	cabal sandbox delete
 
 configure: clean
-	yesod configure
+	{{build}} configure ${FLAGS}
 
 deps: clean
 	cabal install --only-dependencies --allow-newer ${FLAGS}
 	make configure
 
 build:
-	yesod build
+	{{build}} build
 
 rebuild: clean configure build
 

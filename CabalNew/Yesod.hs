@@ -29,5 +29,4 @@ yesodProject :: CabalNew -> FilePath -> Sh (Sh ())
 yesodProject config _projectDir = do
     withCommit (projectGitLevel config) "yesod init" $
         yesodInit config
-    return $
-        templateFile config "templates/Makefile-yesod.mustache" "Makefile"
+    return (return ())
