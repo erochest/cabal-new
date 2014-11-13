@@ -61,6 +61,8 @@ deps: clean
 build:
 	{{build}} build
 
+restart: distclean init build
+
 rebuild: clean configure build
 
 .PHONY: all init test run clean distclean configure deps build rebuild hlint
