@@ -46,6 +46,12 @@ opts' =   CabalNew
                      <> help "The type of project (compile target):\
                              \ 'Executable', 'Library', or 'Yesod'.\
                              \ Default is Executable.")
+      <*> backendOpt (  short 'b' <> long "yesod-backend" <> value Nothing
+                     <> help "The backend for a Yesod project. One of\
+                             \ 's' (SQLite), 'p' (PostgreSQL),\
+                             \ 'pf' (PostgreSQL+Fay), 'mongo' (MongoDB),\
+                             \ 'mysql' (MySQL), or 'simple' (no database).\
+                             \ If used at all, it defaults to 'p'.")
       <*> switch     (  short 'T' <> long "tmuxifier"
                      <> help "Generate and place a tmuxifier layout.")
 
@@ -54,6 +60,9 @@ gitOption = option (readGitLevel =<< readerAsk)
 
 targetOpt :: Mod OptionFields CabalTarget -> Parser CabalTarget
 targetOpt = option (readTargetOption =<< readerAsk)
+
+backendOpt :: Mod OptionFields (Maybe YesodBackend) -> Parser (Maybe YesodBackend)
+backendOpt = option (optional (str >>= readBackendOption))
 
 opts :: ParserInfo CabalNew
 opts  = info (helper <*> opts')
@@ -83,3 +92,13 @@ readTargetOption target = go $ map toLower target
           go _       = fail $  "Invalid --target value: '" ++ target
                             ++ "'. Please supply one of 'executable' or\
                                \ 'library'."
+
+readBackendOption :: Monad m => String -> m YesodBackend
+readBackendOption backend = go $ map toLower backend
+    where go "s"      = return Sqlite
+          go "p"      = return Postgres
+          go "pf"     = return PostFay
+          go "mongo"  = return MongoDB
+          go "mysql"  = return MySQL
+          go "simple" = return Simple
+          go _        = fail $ "Invalid backend: " ++ backend
