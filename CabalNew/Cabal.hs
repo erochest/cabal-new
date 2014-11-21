@@ -6,6 +6,7 @@
 module CabalNew.Cabal
     ( cabal_
     , cabalInit
+    , cabalSandbox_
     , setMainIs
     , sandbox
     , cabalProject
@@ -37,6 +38,9 @@ cabalInit CabalNew{..} =
                               , ifSet "synopsis" projectSynopsis
                               ]
 
+cabalSandbox_ :: T.Text -> [T.Text] -> Sh ()
+cabalSandbox_ cmdName args = command1_ "cabal" [] "sandbox" $ cmdName : args
+
 setMainIs :: FilePath -> String -> Sh ()
 setMainIs cabalPath mainFile = sed cabalPath $ \line ->
     if "-- main-is:" `T.isInfixOf` line
@@ -44,7 +48,10 @@ setMainIs cabalPath mainFile = sed cabalPath $ \line ->
         else line
 
 sandbox :: Sh ()
-sandbox = cabal_ "sandbox" ["init"] >> run_ "sandbox-init" ["--enable-tests"]
+sandbox = do
+    cabalSandbox_ "init" []
+    cabal_ "install" ["-j", "--only-dependencies", "--enable-tests"]
+    cabal_ "configure" ["--enable-tests"]
 
 cabalProject :: CabalNew -> FilePath -> Sh (Sh ())
 cabalProject config@CabalNew{..} _projectDir = do
