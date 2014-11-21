@@ -1,4 +1,6 @@
 
+SRC=$(shell find src -name '*.hs')
+
 {{#isyesod}}
 PORT=9090
 {{/isyesod}}
@@ -41,6 +43,9 @@ run:
 #
 # deploy:
 # prep and push
+
+tags: ${SRC}
+	hasktags --ctags *.hs src
 
 hlint:
 	hlint *.hs src specs

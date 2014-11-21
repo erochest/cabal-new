@@ -1,4 +1,6 @@
 
+SRC=CabalNew.hs $(shell find CabalNew -name '*.hs')
+
 all: init test docs package
 
 init:
@@ -12,6 +14,9 @@ run:
 
 lint:
 	hlint CabalNew.hs CabalNew/*
+
+tags: ${SRC}
+	hasktags --ctags CabalNew.hs CabalNew
 
 # docs:
 # generate api documentation
