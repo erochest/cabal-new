@@ -35,6 +35,11 @@ specs: build
 run:
 	${CABAL} run
 
+{{#isjs}}
+open: build
+	open ./dist/build/{{projectName}}/{{projectName}}.jsexe/index.html
+{{/isjs}}
+
 # docs:
 # generate api documentation
 #
