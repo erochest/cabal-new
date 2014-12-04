@@ -37,8 +37,7 @@ templateTo cabalNew dataFileName f = do
         context :: Monad m => String -> MuType m
         context "build"   = MuVariable $ case projectTarget cabalNew of
                                              Yesod -> "yesod" :: Text
-                                             GhcJs -> "cabal-js"
-                                             _     -> "cabal"
+                                             _     -> "${CABAL}"
         context "isyesod" = MuBool $ projectTarget cabalNew == Yesod
         context "isjs"    = MuBool $ projectTarget cabalNew == GhcJs
         context "projectRootDir"   = MuVariable $ projectRootDir cabalNew

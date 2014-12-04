@@ -5,13 +5,19 @@ SRC=$(shell find src -name '*.hs')
 PORT=9090
 {{/isyesod}}
 {{^isyesod}}
+{{#isjs}}
+CABAL=cabal-js
+{{/isjs}}
+{{^isjs}}
+CABAL=cabal
+{{/isjs}}
 FLAGS=--enable-tests
 {{/isyesod}}
 
 all: init test docs package
 
 init:
-	cabal sandbox init
+	${CABAL} sandbox init
 	make deps
 
 test: build
@@ -27,7 +33,7 @@ specs: build
 {{/isyesod}}
 
 run:
-	cabal run
+	${CABAL} run
 
 # docs:
 # generate api documentation
@@ -51,16 +57,16 @@ hlint:
 	hlint *.hs src specs
 
 clean:
-	cabal clean
+	${CABAL} clean
 
 distclean: clean
-	cabal sandbox delete
+	${CABAL} sandbox delete
 
 configure: clean
 	{{build}} configure ${FLAGS}
 
 deps: clean
-	cabal install --only-dependencies --allow-newer ${FLAGS}
+	${CABAL} install --only-dependencies --allow-newer ${FLAGS}
 	make configure
 
 build:
