@@ -18,6 +18,7 @@ data GitLevel = GitHere | ParentGit | Gitless
 data CabalTarget = Executable
                  | Library
                  | Yesod
+                 | GhcJs
                  deriving (Show, Eq, Data, Typeable)
 
 data YesodBackend = Sqlite

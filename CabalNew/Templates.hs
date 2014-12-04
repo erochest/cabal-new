@@ -35,10 +35,12 @@ templateTo cabalNew dataFileName f = do
         liftIO (hastacheFile defaultConfig dataFile $ mkStrContext context)
     where
         context :: Monad m => String -> MuType m
-        context "build"   = MuVariable $ if projectTarget cabalNew == Yesod
-                                then "yesod" :: Text
-                                else "cabal"
+        context "build"   = MuVariable $ case projectTarget cabalNew of
+                                             Yesod -> "yesod" :: Text
+                                             GhcJs -> "cabal-js"
+                                             _     -> "cabal"
         context "isyesod" = MuBool $ projectTarget cabalNew == Yesod
+        context "isjs"    = MuBool $ projectTarget cabalNew == GhcJs
         context "projectRootDir"   = MuVariable $ projectRootDir cabalNew
         context "projectName"      = MuVariable $ projectName cabalNew
         context "projectGitLevel"  = MuVariable . show $ projectGitLevel cabalNew

@@ -21,7 +21,6 @@ import           CabalNew.Common
 import           CabalNew.Files
 import           CabalNew.Git
 import           CabalNew.Opts
-import           CabalNew.Templates
 import           CabalNew.Types
 import           CabalNew.Yesod
 
@@ -44,12 +43,13 @@ main = do
                 Executable -> cabalProject config' projectDir
                 Library    -> cabalProject config' projectDir
                 Yesod      -> yesodProject config' projectDir
+                GhcJs      -> cabalProject config' projectDir
 
             withCommit projectGitLevel "apply hs project" $ do
                 patch
                 patchProject config'
 
-            sandbox
+            sandbox config'
             publish privateProject projectGitLevel $ T.pack projectSynopsis
 
         when projectTmuxifier $

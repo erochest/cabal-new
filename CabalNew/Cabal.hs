@@ -25,21 +25,27 @@ import           CabalNew.Templates
 import           CabalNew.Types
 import           CabalNew.Utils
 
-cabal_ :: T.Text -> [T.Text] -> Sh ()
-cabal_ = command1_ "cabal" []
+
+cabalCmd :: CabalNew -> FilePath
+cabalCmd c | projectTarget c == GhcJs = "cabal-js"
+           | otherwise                = "cabal"
+
+cabal_ :: CabalNew -> T.Text -> [T.Text] -> Sh ()
+cabal_ c = command1_ (cabalCmd c) []
 
 cabalInit :: CabalNew -> Sh ()
-cabalInit CabalNew{..} =
-    cabal_ "init" $ catMaybes [ Just  "--non-interactive"
-                              , Just  "--is-library"
-                              , Just  "--main-is=Main.hs"
-                              , ifSet "license"  projectLicense
-                              , ifSet "email"    projectEmail
-                              , ifSet "synopsis" projectSynopsis
-                              ]
+cabalInit c@CabalNew{..} =
+    cabal_ c "init" $ catMaybes [ Just  "--non-interactive"
+                                , Just  "--is-library"
+                                , Just  "--main-is=Main.hs"
+                                , ifSet "license"  projectLicense
+                                , ifSet "email"    projectEmail
+                                , ifSet "synopsis" projectSynopsis
+                                ]
 
-cabalSandbox_ :: T.Text -> [T.Text] -> Sh ()
-cabalSandbox_ cmdName args = command1_ "cabal" [] "sandbox" $ cmdName : args
+cabalSandbox_ :: CabalNew -> T.Text -> [T.Text] -> Sh ()
+cabalSandbox_ c cmdName args =
+    command1_ (cabalCmd c) [] "sandbox" $ cmdName : args
 
 setMainIs :: FilePath -> String -> Sh ()
 setMainIs cabalPath mainFile = sed cabalPath $ \line ->
@@ -47,11 +53,11 @@ setMainIs cabalPath mainFile = sed cabalPath $ \line ->
         then takeWhile C.isSpace line <> "main-is:             " <> T.pack mainFile
         else line
 
-sandbox :: Sh ()
-sandbox = do
-    cabalSandbox_ "init" []
-    cabal_ "install" ["-j", "--only-dependencies", "--enable-tests"]
-    cabal_ "configure" ["--enable-tests"]
+sandbox :: CabalNew -> Sh ()
+sandbox c = do
+    cabalSandbox_ c "init" []
+    cabal_ c "install" ["-j", "--only-dependencies", "--enable-tests"]
+    cabal_ c "configure" ["--enable-tests"]
 
 cabalProject :: CabalNew -> FilePath -> Sh (Sh ())
 cabalProject config@CabalNew{..} _projectDir = do
@@ -60,6 +66,8 @@ cabalProject config@CabalNew{..} _projectDir = do
     withCommit projectGitLevel "cabal init" $
         cabalInit config
     stubProgram projectGitLevel projectExecutable projectName mainFile
+    when (projectTarget == GhcJs) $
+        copyDataFile "templates/ghcjs.cabal.config" "cabal.config"
     return $ do
         copyDataFile "templates/ghci" ".ghci"
         unless (projectGitLevel == Gitless) $
