@@ -54,5 +54,6 @@ main = do
 
         when projectTmuxifier $
             tmuxLayout config
+        gitVogue projectGitLevel
 
         echo "done."

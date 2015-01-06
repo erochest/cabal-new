@@ -6,6 +6,7 @@ module CabalNew.Git
     , gitAddAllCommit
     , withCommit
     , publish
+    , gitVogue
     ) where
 
 
@@ -42,3 +43,8 @@ publish False ParentGit msg = publish' ParentGit msg
 publish' :: GitLevel -> T.Text -> Sh ()
 publish' gitLevel descr =  run_ "hub" ["create", "-d", descr]
                         >> git_ gitLevel "push" ["-u", "origin", "master"]
+
+gitVogue :: GitLevel -> Sh ()
+gitVogue GitHere   = git_' "vogue" ["init"]
+gitVogue ParentGit = return ()
+gitVogue Gitless   = return ()
