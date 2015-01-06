@@ -4,13 +4,13 @@
 name:                cabal-new
 version:             0.3.10.0
 synopsis:            A utility to bootstrap new Haskell projects.
--- description:         
+description:         A utility to bootstrap new Haskell projects.
 license:             Apache-2.0
 license-file:        LICENSE
 author:              Eric Rochester
 maintainer:          erochest@gmail.com
 -- copyright:           
--- category:            
+category:            Development
 build-type:          Simple
 -- extra-source-files:  
 data-files:          templates/env.mustache
@@ -69,3 +69,4 @@ executable cabal-new
 source-repository this
   type:                git
   location:            git://github.com/erochest/cabal-new.git
+  tag:                 master
