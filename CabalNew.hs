@@ -51,9 +51,9 @@ main = do
 
             sandbox config'
             publish privateProject projectGitLevel $ T.pack projectSynopsis
+            gitVogue projectGitLevel
 
         when projectTmuxifier $
             tmuxLayout config
-        gitVogue projectGitLevel
 
         echo "done."
