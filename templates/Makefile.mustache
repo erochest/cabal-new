@@ -77,8 +77,11 @@ deps: clean
 build:
 	{{build}} build
 
+watch:
+	arion . src specs
+
 restart: distclean init build
 
 rebuild: clean configure build
 
-.PHONY: all init test run clean distclean configure deps build rebuild hlint
+.PHONY: all init test run clean distclean configure deps build rebuild hlint watch
