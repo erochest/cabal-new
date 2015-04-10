@@ -49,6 +49,9 @@ deps: clean
 build:
 	cabal build
 
+watch:
+	arion . src specs
+
 rebuild: clean configure build
 
-.PHONY: all init test run clean distclean configure deps build rebuild
+.PHONY: all init test run clean distclean configure deps build rebuild watch
