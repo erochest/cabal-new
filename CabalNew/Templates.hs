@@ -20,6 +20,7 @@ import           Text.Hastache.Context
 
 import           CabalNew.Git
 import           CabalNew.Types
+import           CabalNew.Utils
 import           Paths_cabal_new
 
 
@@ -50,6 +51,7 @@ templateTo cabalNew dataFileName f = do
         context "projectCategory"  = MuVariable $ projectCategory cabalNew
         context "projectTarget"    = MuVariable . show $ projectTarget cabalNew
         context "projectTmuxifier" = MuBool $ projectTmuxifier cabalNew
+        context "projectMainFile"  = MuVariable . toTitleCase True $ projectName cabalNew
         context _ = MuNothing
 
 templateFile :: CabalNew -> FS.FilePath -> FS.FilePath -> Sh ()

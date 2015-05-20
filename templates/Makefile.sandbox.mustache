@@ -1,0 +1,24 @@
+
+build: {{projectMainFile}}
+
+{{projectMainFile}}: cabal.sandbox.config {{projectMainFile}}.hs
+	cabal exec -- ghc --make {{projectMainFile}}.hs
+
+init: cabal.sandbox.config deps
+
+deps:
+
+cabal.sandbox.config:
+	cabal sandbox init
+
+clean:
+	rm -f *.o *.hi *.html
+
+distclean: clean
+	rm -f {{projectMainFile}}
+	cabal sandbox delete
+
+%.html: *.lhs
+	pandoc --from markdown+lhs --to html5 --smart --standalone --output=$@ $<
+
+.PHONY: init deps build clean distclean

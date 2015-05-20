@@ -19,6 +19,7 @@ data CabalTarget = Executable
                  | Library
                  | Yesod
                  | GhcJs
+                 | Sandbox
                  deriving (Show, Eq, Data, Typeable)
 
 data YesodBackend = Sqlite

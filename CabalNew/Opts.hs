@@ -44,8 +44,9 @@ opts' =   CabalNew
                      <> help "The cabal option for the category.")
       <*> targetOpt  (  short 't' <> long "target" <> value Executable
                      <> help "The type of project (compile target):\
-                             \ 'Executable', 'Library', 'Yesod', or\
-                             \ 'JavaScript'. Default is Executable.")
+                             \ 'Executable', 'Library', 'Yesod',\
+                             \ 'JavaScript', or 'Sandbox'.\
+                             \ Default is Executable.")
       <*> backendOpt (  short 'b' <> long "yesod-backend" <> value Nothing
                      <> help "The backend for a Yesod project. One of\
                              \ 's' (SQLite), 'p' (PostgreSQL),\
@@ -90,6 +91,7 @@ readTargetOption target = go $ map toLower target
           go ('e':_) = return Executable
           go ('y':_) = return Yesod
           go ('j':_) = return GhcJs
+          go ('s':_) = return Sandbox
           go _       = fail $  "Invalid --target value: '" ++ target
                             ++ "'. Please supply one of 'executable' or\
                                \ 'library'."

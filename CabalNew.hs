@@ -21,6 +21,7 @@ import           CabalNew.Common
 import           CabalNew.Files
 import           CabalNew.Git
 import           CabalNew.Opts
+import           CabalNew.Sandbox
 import           CabalNew.Types
 import           CabalNew.Yesod
 
@@ -40,16 +41,19 @@ main = do
             init config
 
             patch <- case projectTarget of
-                Executable -> cabalProject config' projectDir
-                Library    -> cabalProject config' projectDir
-                Yesod      -> yesodProject config' projectDir
-                GhcJs      -> cabalProject config' projectDir
+                Executable -> cabalProject   config' projectDir
+                Library    -> cabalProject   config' projectDir
+                Yesod      -> yesodProject   config' projectDir
+                GhcJs      -> cabalProject   config' projectDir
+                Sandbox    -> sandboxProject config' projectDir
 
             withCommit projectGitLevel "apply hs project" $ do
                 patch
-                patchProject config'
+                unless (projectTarget == Sandbox) $
+                    patchProject config'
 
-            sandbox config'
+            unless (projectTarget == Sandbox) $
+                sandbox config'
             publish privateProject projectGitLevel $ T.pack projectSynopsis
             gitVogue projectGitLevel
 

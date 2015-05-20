@@ -24,7 +24,9 @@ data-files:          templates/env.mustache
                    , templates/repo.cabal.mustache
                    , templates/Specs.hs
                    , templates/Makefile.mustache
+                   , templates/Makefile.sandbox.mustache
                    , templates/Main.hs
+                   , templates/Main.sandbox.hs
                    , templates/ghcjs.cabal.config
 cabal-version:       >=1.10
 
@@ -35,6 +37,7 @@ executable cabal-new
                      , CabalNew.Files
                      , CabalNew.Git
                      , CabalNew.Opts
+                     , CabalNew.Sandbox
                      , CabalNew.Templates
                      , CabalNew.Types
                      , CabalNew.Utils
