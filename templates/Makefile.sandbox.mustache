@@ -11,8 +11,12 @@ deps:
 cabal.sandbox.config:
 	cabal sandbox init
 
+tags:
+	codex update
+
 clean:
 	rm -f *.o *.hi *.html
+	codex cache clean
 
 distclean: clean
 	rm -f {{projectMainFile}}
@@ -21,4 +25,4 @@ distclean: clean
 %.html: *.lhs
 	pandoc --from markdown+lhs --to html5 --smart --standalone --output=$@ $<
 
-.PHONY: init deps build clean distclean
+.PHONY: init deps build clean distclean tags

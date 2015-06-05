@@ -16,7 +16,7 @@ lint:
 	hlint CabalNew.hs CabalNew/*
 
 tags: ${SRC}
-	hasktags --ctags CabalNew.hs CabalNew
+	codex update
 
 # docs:
 # generate api documentation
@@ -35,6 +35,7 @@ install:
 
 clean:
 	cabal clean
+	codex cache clean
 
 distclean: clean
 	cabal sandbox delete
