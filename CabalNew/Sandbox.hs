@@ -36,6 +36,8 @@ sandboxProject config projectDir = do
         sandboxInit config
     return $ do
         templateFile config "templates/env.mustache" ".env"
+        unless (projectGitLevel config == Gitless) $
+            copyDataFile "templates/gitignore" ".gitignore"
         when (projectGitLevel config == GitHere) $
             copyDataFile "templates/ctags" ".git/hooks/ctags"
         run "stylish-haskell" ["--defaults"] >>= writefile ".stylish-haskell.yaml"
