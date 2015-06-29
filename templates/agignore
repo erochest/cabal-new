@@ -1,0 +1,5 @@
+tags
+cabal-dev
+dist
+.cabal-sandbox
+.stack-work

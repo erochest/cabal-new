@@ -13,7 +13,8 @@ maintainer:          erochest@gmail.com
 category:            Development
 build-type:          Simple
 -- extra-source-files:  
-data-files:          templates/env.mustache
+data-files:          templates/agignore
+                   , templates/env.mustache
                    , templates/gitignore
                    , templates/ghci
                    , templates/README.md.mustache

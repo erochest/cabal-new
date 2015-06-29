@@ -51,6 +51,7 @@ main = do
                 patch
                 unless (projectTarget == Sandbox) $
                     patchProject config'
+                agIgnore config'
 
             unless (projectTarget == Sandbox) $
                 sandbox config'

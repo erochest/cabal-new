@@ -7,6 +7,7 @@ module CabalNew.Common
     ( init
     , patchProject
     , tmuxLayout
+    , agIgnore
     ) where
 
 
@@ -46,3 +47,7 @@ tmuxLayout config@CabalNew{..} = do
         . (tmuxLayouts </>)
         . FS.decodeString
         $ projectName ++ ".window.sh"
+
+agIgnore :: CabalNew -> Sh ()
+agIgnore =
+    copyDataFile "templates/agignore" . (</> ".agignore") . projectRootDir

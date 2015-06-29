@@ -51,7 +51,7 @@ build:
 	cabal build
 
 watch:
-	arion . src specs
+	ghcid
 
 rebuild: clean configure build
 
