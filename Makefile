@@ -3,14 +3,16 @@ SRC=CabalNew.hs $(shell find CabalNew -name '*.hs')
 
 all: init test docs package
 
-init:
-	cabal sandbox init
-	make deps
+init: stack.yaml
+
+stack.yaml:
+	stack init --prefer-nightly
 
 test: build
+	stack test
 
-run:
-	cabal run
+run: build
+	stack exec -- cabal-new
 
 lint:
 	hlint CabalNew.hs CabalNew/*
@@ -28,31 +30,23 @@ tags: ${SRC}
 # start dev server or process. `vagrant up`, `yesod devel`, etc.
 
 install:
-	cabal install
+	stack install
 
 # deploy:
 # prep and push
 
 clean:
-	cabal clean
+	stack clean
 	codex cache clean
 
 distclean: clean
-	cabal sandbox delete
-
-configure: clean
-	cabal configure --enable-tests
-
-deps: clean
-	cabal install --only-dependencies --allow-newer --enable-tests
-	cabal configure --enable-tests
 
 build:
-	cabal build
+	stack build
 
 watch:
-	ghcid
+	ghcid "--command=stack ghci"
 
-rebuild: clean configure build
+rebuild: clean build
 
-.PHONY: all init test run clean distclean configure deps build rebuild watch
+.PHONY: all init test run clean distclean build rebuild watch
