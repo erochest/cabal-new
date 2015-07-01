@@ -9,7 +9,7 @@ module CabalNew.Files
     ) where
 
 
-import           ClassyPrelude             hiding ((</>), (<>))
+import           ClassyPrelude             hiding ((</>), (<>), FilePath)
 import qualified Data.Text                 as T
 import           Filesystem                (getHomeDirectory)
 import qualified Filesystem.Path.CurrentOS as FS

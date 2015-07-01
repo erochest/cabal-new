@@ -13,7 +13,7 @@ module CabalNew.Cabal
     ) where
 
 
-import           ClassyPrelude
+import           ClassyPrelude             hiding (FilePath)
 import qualified Data.Char                 as C
 import qualified Data.Text                 as T
 import qualified Filesystem.Path.CurrentOS as FS

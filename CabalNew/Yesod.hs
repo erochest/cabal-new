@@ -8,8 +8,8 @@ module CabalNew.Yesod
     ) where
 
 
-import           ClassyPrelude
-import qualified Data.Text          as T
+import           ClassyPrelude  hiding (FilePath)
+import qualified Data.Text      as T
 import           Shelly
 
 import           CabalNew.Git

@@ -8,7 +8,7 @@ module CabalNew.Sandbox
     ) where
 
 
-import           ClassyPrelude
+import           ClassyPrelude             hiding (FilePath)
 import qualified Data.Text                 as T
 import qualified Filesystem.Path.CurrentOS as FS
 import           Shelly
