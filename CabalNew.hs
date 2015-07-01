@@ -53,8 +53,6 @@ main = do
                     patchProject config'
                 agIgnore config'
 
-            unless (projectTarget == Sandbox) $
-                sandbox config'
             publish privateProject projectGitLevel $ T.pack projectSynopsis
             gitVogue projectGitLevel
 
