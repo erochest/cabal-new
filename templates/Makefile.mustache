@@ -49,6 +49,9 @@ open: build
 # deploy:
 # prep and push
 
+configure:
+	cabal configure --package-db=clear --package-db=global --package-db=`stack path --snapshot-pkg-db` --package-db=`stack path --local-pkg-db`
+
 install:
 	stack install
 
@@ -74,4 +77,4 @@ restart: distclean init build
 
 rebuild: clean build
 
-.PHONY: all init test run clean distclean build rebuild hlint watch tags
+.PHONY: all init configure test run clean distclean build rebuild hlint watch tags
