@@ -11,6 +11,9 @@ deps:
 cabal.sandbox.config:
 	cabal sandbox init
 
+argon:
+        find src -name \*.hs | xargs argon
+
 tags:
 	codex update
 

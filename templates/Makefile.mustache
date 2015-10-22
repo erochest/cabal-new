@@ -40,14 +40,19 @@ open: build
 # docs:
 # generate api documentation
 #
-# package:
-# build a release tarball or executable
-#
 # dev:
 # start dev server or process. `vagrant up`, `yesod devel`, etc.
 #
 # deploy:
 # prep and push
+
+package: test configure
+	cabal check
+	cabal sdist
+
+upload: package
+	cabal upload --check `ls dist/*.tar.gz | sort | tail -1`
+	cabal upload `ls dist/*.tar.gz | sort | tail -1`
 
 configure:
 	cabal configure --package-db=clear --package-db=global --package-db=`stack path --snapshot-pkg-db` --package-db=`stack path --local-pkg-db`
@@ -57,6 +62,9 @@ install:
 
 tags: ${SRC}
 	codex update
+
+argon:
+        find src -name \*.hs | xargs argon
 
 hlint:
 	hlint *.hs src specs
@@ -77,4 +85,4 @@ restart: distclean init build
 
 rebuild: clean build
 
-.PHONY: all init configure test run clean distclean build rebuild hlint watch tags
+.PHONY: all init configure test run clean distclean build rebuild hlint watch tags argon
